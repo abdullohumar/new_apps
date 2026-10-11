@@ -10,11 +10,9 @@ class ArticleResponse {
   ArticleResponse({required this.success, required this.message, required this.articles});
 
   factory ArticleResponse.fromJson(Map<String, dynamic> json) {
-    final List data = json['data'];
-    return ArticleResponse(
-      success: json['success'],
-      message: json['message'],
-      articles: data.map((item) => Article.fromJson(item)).toList(),
-    );
+    // TODO: kembalikan ArticleResponse(...)
+    // Hint: daftar artikel ada di json['data'] (List).
+    //       Ubah tiap item jadi Article dengan .map(...) lalu .toList()
+    throw UnimplementedError('ArticleResponse.fromJson belum dibuat');
   }
 }

@@ -7,5 +7,6 @@ final authorServiceProvider = Provider((ref) => AuthorService());
 
 // Semua penulis (dipakai dropdown di form artikel).
 final authorsProvider = FutureProvider<List<Author>>((ref) {
-  return ref.watch(authorServiceProvider).getAuthors();
+  // TODO: panggil getAuthors() dari authorServiceProvider
+  throw UnimplementedError('authorsProvider belum dibuat');
 });

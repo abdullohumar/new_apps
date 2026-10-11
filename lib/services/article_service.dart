@@ -8,60 +8,50 @@ import '../models/article_response.dart';
 class ArticleService {
   static const baseUrl = 'https://knlhpjkhujzjyzrmxfjj.supabase.co/functions/v1/api';
 
-  // Key admin untuk POST, PUT, DELETE. Isi dengan ADMIN_API_KEY dari guru.
-  // Hanya untuk latihan — jangan simpan key di aplikasi yang dirilis.
-  static const apiKey = 'ISI_ADMIN_API_KEY';
+  // Key admin untuk POST, PUT, DELETE. Isi dengan ADMIN_API_KEY dari punyamu dewe.
+  // Hanya untuk latihan — aslinya jangan taruh kayak gini si apiKey ini.
+  static const apiKey = 'overridemode';
 
   static const headers = {'Content-Type': 'application/json', 'x-api-key': apiKey};
 
-  // GET /articles
+  // GET /articles?limit=50
   Future<List<Article>> getArticles() async {
-    final response = await http.get(Uri.parse('$baseUrl/articles?limit=50'));
-    final body = _decode(response);
-    return ArticleResponse.fromJson(body).articles;
+    // TODO: panggil http.get(Uri.parse(...)), lalu ubah dengan _decode(response)
+    // Hint: hasilnya dibungkus -> pakai ArticleResponse.fromJson(...).articles
+    throw UnimplementedError('getArticles belum dibuat');
   }
 
   // GET /articles/{id}
   Future<Article> getArticle(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/articles/$id'));
-    final body = _decode(response);
-    return Article.fromJson(body['data']);
+    // TODO: GET ke '$baseUrl/articles/$id'
+    // Hint: satu artikel ada di body['data'] -> Article.fromJson(...)
+    throw UnimplementedError('getArticle belum dibuat');
   }
 
-  // POST /articles
+  // POST /articles (butuh headers)
   Future<Article> createArticle(Article article) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/articles'),
-      headers: headers,
-      body: jsonEncode(article.toJson()),
-    );
-    final body = _decode(response);
-    return Article.fromJson(body['data']);
+    // TODO: http.post dengan headers dan body
+    // Hint: body harus String JSON -> jsonEncode(article.toJson())
+    throw UnimplementedError('createArticle belum dibuat');
   }
 
-  // PUT /articles/{id}
+  // PUT /articles/{id} (butuh headers)
   Future<Article> updateArticle(Article article) async {
-    final response = await http.put(
-      Uri.parse('$baseUrl/articles/${article.id}'),
-      headers: headers,
-      body: jsonEncode(article.toJson()),
-    );
-    final body = _decode(response);
-    return Article.fromJson(body['data']);
+    // TODO: mirip createArticle, tapi pakai http.put dan id artikel di URL
+    throw UnimplementedError('updateArticle belum dibuat');
   }
 
-  // DELETE /articles/{id}
+  // DELETE /articles/{id} (butuh headers)
   Future<void> deleteArticle(int id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/articles/$id'), headers: headers);
-    _decode(response);
+    // TODO: http.delete dengan headers, lalu cek hasilnya dengan _decode(response)
+    throw UnimplementedError('deleteArticle belum dibuat');
   }
 
   // Ubah response menjadi Map. Kalau gagal, lempar pesan error dari API.
   Map<String, dynamic> _decode(http.Response response) {
-    final body = jsonDecode(utf8.decode(response.bodyBytes));
-    if (response.statusCode >= 400) {
-      throw Exception(body['message']);
-    }
-    return body;
+    // TODO: ubah response jadi Map dengan jsonDecode(...)
+    // Hint: pakai utf8.decode(response.bodyBytes) agar huruf non-ASCII aman
+    // Hint: kalau response.statusCode >= 400, throw Exception(body['message'])
+    throw UnimplementedError('_decode belum dibuat');
   }
 }

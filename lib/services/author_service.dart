@@ -8,11 +8,8 @@ import 'article_service.dart';
 class AuthorService {
   // GET /authors
   Future<List<Author>> getAuthors() async {
-    final response = await http.get(Uri.parse('${ArticleService.baseUrl}/authors'));
-    final body = jsonDecode(utf8.decode(response.bodyBytes));
-    if (response.statusCode >= 400) throw Exception(body['message']);
-
-    final List data = body['data'];
-    return data.map((json) => Author.fromJson(json)).toList();
+    // TODO: GET ke '${ArticleService.baseUrl}/authors'
+    // Hint: daftar penulis ada di body['data'] (List) -> ubah tiap item dengan Author.fromJson
+    throw UnimplementedError('getAuthors belum dibuat');
   }
 }

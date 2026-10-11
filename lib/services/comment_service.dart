@@ -6,28 +6,16 @@ import '../models/comment.dart';
 import 'article_service.dart';
 
 class CommentService {
-  // GET /articles/{articleId}/comments
+  // GET /articles/{articleId}/comments?limit=50
   Future<List<Comment>> getComments(int articleId) async {
-    final response = await http.get(
-      Uri.parse('${ArticleService.baseUrl}/articles/$articleId/comments?limit=50'),
-    );
-    final body = jsonDecode(utf8.decode(response.bodyBytes));
-    if (response.statusCode >= 400) throw Exception(body['message']);
-
-    final List data = body['data'];
-    return data.map((json) => Comment.fromJson(json)).toList();
+    // TODO: GET komentar, lalu ubah body['data'] menjadi List<Comment>
+    throw UnimplementedError('getComments belum dibuat');
   }
 
   // POST /articles/{articleId}/comments — tidak perlu api key
   Future<Comment> addComment(int articleId, String name, String content) async {
-    final response = await http.post(
-      Uri.parse('${ArticleService.baseUrl}/articles/$articleId/comments'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'name': name, 'content': content}),
-    );
-    final body = jsonDecode(utf8.decode(response.bodyBytes));
-    if (response.statusCode >= 400) throw Exception(body['message']);
-
-    return Comment.fromJson(body['data']);
+    // TODO: http.post dengan header Content-Type dan body {'name': ..., 'content': ...}
+    // Hint: jangan lupa jsonEncode body-nya
+    throw UnimplementedError('addComment belum dibuat');
   }
 }

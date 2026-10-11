@@ -7,5 +7,6 @@ final commentServiceProvider = Provider((ref) => CommentService());
 
 // Komentar milik satu artikel (parameter: id artikel).
 final commentsProvider = FutureProvider.family<List<Comment>, int>((ref, articleId) {
-  return ref.watch(commentServiceProvider).getComments(articleId);
+  // TODO: panggil getComments(articleId) dari commentServiceProvider
+  throw UnimplementedError('commentsProvider belum dibuat');
 });
