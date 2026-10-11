@@ -1,19 +1,33 @@
-import '../api/api_client.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 import '../models/comment.dart';
+import 'article_service.dart';
 
 class CommentService {
-  final _api = ApiClient.instance;
+  // GET /articles/{articleId}/comments
+  Future<List<Comment>> getComments(int articleId) async {
+    final response = await http.get(
+      Uri.parse('${ArticleService.baseUrl}/articles/$articleId/comments?limit=50'),
+    );
+    final body = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode >= 400) throw Exception(body['message']);
 
-  Future<({List<Comment> items, bool hasNext})> getComments(int articleId, {int page = 1}) async {
-    final res = await _api.get('/articles/$articleId/comments', query: {'page': page, 'limit': 10});
-    final items = (res.data as List).map((e) => Comment.fromJson(e as Map<String, dynamic>)).toList();
-    return (items: items, hasNext: res.hasNext);
+    final List data = body['data'];
+    return data.map((json) => Comment.fromJson(json)).toList();
   }
 
-  Future<Comment> send(int articleId, {required String name, required String content}) async {
-    final res = await _api.post('/articles/$articleId/comments', {'name': name, 'content': content});
-    return Comment.fromJson(res.data as Map<String, dynamic>);
-  }
+  // POST /articles/{articleId}/comments — tidak perlu api key
+  Future<Comment> addComment(int articleId, String name, String content) async {
+    final response = await http.post(
+      Uri.parse('${ArticleService.baseUrl}/articles/$articleId/comments'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'name': name, 'content': content}),
+    );
+    final body = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode >= 400) throw Exception(body['message']);
 
-  Future<void> delete(int commentId, String apiKey) => _api.delete('/comments/$commentId', apiKey: apiKey);
+    return Comment.fromJson(body['data']);
+  }
 }

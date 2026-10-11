@@ -1,35 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'providers/article_provider.dart';
-import 'providers/auth_provider.dart';
-import 'screens/home_screen.dart';
-import 'theme.dart';
+import 'screens/article_list_screen.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final auth = AuthProvider();
-  await auth.load();
-
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: auth),
-        ChangeNotifierProvider(create: (_) => ArticleProvider()..init()),
-      ],
-      child: const NewsApp(),
-    ),
-  );
+void main() {
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class NewsApp extends StatelessWidget {
-  const NewsApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    title: 'Kabar',
-    debugShowCheckedModeBanner: false,
-    theme: buildTheme(),
-    home: const HomeScreen(),
-  );
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Kabar',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(colorSchemeSeed: const Color(0xFFC8411F)),
+      home: const ArticleListScreen(),
+    );
+  }
 }

@@ -1,36 +1,67 @@
-import '../api/api_client.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 import '../models/article.dart';
+import '../models/article_response.dart';
 
 class ArticleService {
-  final _api = ApiClient.instance;
+  static const baseUrl = 'https://knlhpjkhujzjyzrmxfjj.supabase.co/functions/v1/api';
 
-  List<Article> _list(dynamic data) =>
-      (data as List).map((e) => Article.fromJson(e as Map<String, dynamic>)).toList();
+  // Key admin untuk POST, PUT, DELETE. Isi dengan ADMIN_API_KEY dari guru.
+  // Hanya untuk latihan — jangan simpan key di aplikasi yang dirilis.
+  static const apiKey = 'ISI_ADMIN_API_KEY';
 
-  Future<({List<Article> items, bool hasNext})> getArticles({
-    int page = 1,
-    String? category,
-    String? search,
-  }) async {
-    final res = await _api.get(
-      '/articles',
-      query: {'page': page, 'limit': 10, 'category': category, 'search': search},
-    );
-    return (items: _list(res.data), hasNext: res.hasNext);
+  static const headers = {'Content-Type': 'application/json', 'x-api-key': apiKey};
+
+  // GET /articles
+  Future<List<Article>> getArticles() async {
+    final response = await http.get(Uri.parse('$baseUrl/articles?limit=50'));
+    final body = _decode(response);
+    return ArticleResponse.fromJson(body).articles;
   }
 
-  Future<List<Article>> getFeatured() async =>
-      _list((await _api.get('/articles/featured', query: {'limit': 5})).data);
+  // GET /articles/{id}
+  Future<Article> getArticle(int id) async {
+    final response = await http.get(Uri.parse('$baseUrl/articles/$id'));
+    final body = _decode(response);
+    return Article.fromJson(body['data']);
+  }
 
-  /// Catatan: setiap panggilan menambah `views` artikel sebanyak 1.
-  Future<Article> getArticle(int id) async =>
-      Article.fromJson((await _api.get('/articles/$id')).data as Map<String, dynamic>);
+  // POST /articles
+  Future<Article> createArticle(Article article) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/articles'),
+      headers: headers,
+      body: jsonEncode(article.toJson()),
+    );
+    final body = _decode(response);
+    return Article.fromJson(body['data']);
+  }
 
-  Future<Article> create(Map<String, Object?> body, String apiKey) async =>
-      Article.fromJson((await _api.post('/articles', body, apiKey: apiKey)).data as Map<String, dynamic>);
+  // PUT /articles/{id}
+  Future<Article> updateArticle(Article article) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/articles/${article.id}'),
+      headers: headers,
+      body: jsonEncode(article.toJson()),
+    );
+    final body = _decode(response);
+    return Article.fromJson(body['data']);
+  }
 
-  Future<Article> update(int id, Map<String, Object?> body, String apiKey) async =>
-      Article.fromJson((await _api.put('/articles/$id', body, apiKey: apiKey)).data as Map<String, dynamic>);
+  // DELETE /articles/{id}
+  Future<void> deleteArticle(int id) async {
+    final response = await http.delete(Uri.parse('$baseUrl/articles/$id'), headers: headers);
+    _decode(response);
+  }
 
-  Future<void> delete(int id, String apiKey) => _api.delete('/articles/$id', apiKey: apiKey);
+  // Ubah response menjadi Map. Kalau gagal, lempar pesan error dari API.
+  Map<String, dynamic> _decode(http.Response response) {
+    final body = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode >= 400) {
+      throw Exception(body['message']);
+    }
+    return body;
+  }
 }
